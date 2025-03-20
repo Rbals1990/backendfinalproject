@@ -1,0 +1,33 @@
+{
+  "name": "express-bookings",
+  "version": "1.0.0",
+  "description": "Your REST API for managing bookings",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "seed": "node ./src/data/database/prisma/seed.js",
+    "dev": "nodemon src/index.js",
+    "test-positive": "newman run \"./postman/collections/Bookings API.json\" -e \"./postman/environments/Local.postman_environment.json\"",
+    "test-negative": "newman run \"./postman/collections/Bookings API Negative.json\" -e \"./postman/environments/Local.postman_environment.json\"",
+    "test": "npm run test-positive && npm run test-negative"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "@sentry/node": "^7.120.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "newman": "^6.0.0",
+    "nodemon": "^3.0.1",
+    "prisma": "^6.5.0"
+  },
+  "engines": {
+    "node": ">=18 <19"
+  }
+}

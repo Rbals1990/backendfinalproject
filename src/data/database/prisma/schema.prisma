@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "sqlite"
+  url          = "file:./src/data/database/bookingsDB.db"
+  relationMode = "prisma"
+}
+model Amenity {
+  id   String @id @default(uuid())
+  name String
+  properties PropertyAmenity[]
+}
+
+model Property {
+  id              String             @id @default(uuid())
+  title           String
+  description     String
+  location        String
+  pricePerNight   Float
+  bedroomCount    Int
+  bathRoomCount   Int
+  maxGuestCount   Int
+  rating          Int
+  hostId          String?
+  host            Host?               @relation(fields: [hostId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  amenities       PropertyAmenity[]
+  bookings        Booking[]
+  reviews         Review[]
+}
+
+model PropertyAmenity {
+  propertyId  String
+  amenityId   String
+  property    Property @relation(fields: [propertyId], references: [id])
+  amenity     Amenity  @relation(fields: [amenityId], references: [id])
+  @@id([propertyId, amenityId])
+}
+
+model Booking {
+  id            String   @id @default(uuid())
+  userId        String
+  propertyId    String
+  checkinDate   DateTime
+  checkoutDate  DateTime
+  numberOfGuests Int
+  totalPrice    Float
+  bookingStatus String
+  user          User     @relation(fields: [userId], references: [id])
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Host {
+  id              String    @id @default(uuid())
+  username        String
+  password        String
+  name            String
+  email           String
+  phoneNumber     String
+  profilePicture  String
+  aboutMe         String
+  properties      Property[]
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  rating     Int
+  comment    String
+  user       User     @relation(fields: [userId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(uuid())
+  username      String    @unique
+  password      String
+  name          String
+  email         String    
+  phoneNumber   String
+  profilePicture String
+  bookings      Booking[]
+  reviews       Review[]
+}
