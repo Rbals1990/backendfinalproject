@@ -13,6 +13,7 @@ datasource db {
   url          = "file:./src/data/database/bookingsDB.db"
   relationMode = "prisma"
 }
+
 model Amenity {
   id   String @id @default(uuid())
   name String
@@ -45,28 +46,31 @@ model PropertyAmenity {
 }
 
 model Booking {
-  id            String   @id @default(uuid())
-  userId        String
-  propertyId    String
-  checkinDate   DateTime
-  checkoutDate  DateTime
+  id             String   @id @default(uuid())
+  userId         String
+  propertyId     String
+  checkinDate    DateTime
+  checkoutDate   DateTime
   numberOfGuests Int
-  totalPrice    Float
-  bookingStatus String
-  user          User     @relation(fields: [userId], references: [id])
-  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  totalPrice     Float
+  bookingStatus  String
+  user           User     @relation(fields: [userId], references: [id])
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([propertyId])
 }
 
 model Host {
-  id              String    @id @default(uuid())
-  username        String
-  password        String
-  name            String
-  email           String
-  phoneNumber     String
-  profilePicture  String
-  aboutMe         String
-  properties      Property[]
+  id             String    @id @default(uuid())
+  username       String    @unique
+  password       String
+  name           String
+  email          String
+  phoneNumber    String
+  profilePicture String
+  aboutMe        String
+  properties     Property[]
 }
 
 model Review {
@@ -77,16 +81,19 @@ model Review {
   comment    String
   user       User     @relation(fields: [userId], references: [id])
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([propertyId])
 }
 
 model User {
-  id            String    @id @default(uuid())
-  username      String    @unique
-  password      String
-  name          String
-  email         String    
-  phoneNumber   String
+  id             String    @id @default(uuid())
+  username       String    @unique
+  password       String
+  name           String
+  email          String    
+  phoneNumber    String
   profilePicture String
-  bookings      Booking[]
-  reviews       Review[]
+  bookings       Booking[]
+  reviews        Review[]
 }
